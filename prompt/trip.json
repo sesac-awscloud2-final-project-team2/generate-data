@@ -1,0 +1,16 @@
+{
+    "trip_id": "t123456",
+    "user_id": "u789012",
+    "title": "미국 서부 여행",
+    "start_date": "2025-03-15",
+    "end_date": "2025-03-22",
+    "description": "가족과 함께 하는 로드 트립",
+    "country": "USA",
+    "region": "California",
+    "travel_type": "family",
+    "budget": 2000000,
+    "transportation_type": "car",
+    "status": "planning",
+    "privacy_level": "private",
+    "created_at": "2025-01-25T10:00:00+09:00"
+}

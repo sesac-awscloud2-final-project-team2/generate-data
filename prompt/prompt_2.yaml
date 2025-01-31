@@ -1,0 +1,18 @@
+prompt_ver: v2
+summary: ...
+role:
+  system:
+    content: 당신은 예시 json을 출력하는 역할이다. 반드시 다른 부연설명 없이 json만 반환하라. # 시스템 프롬프트
+  user:
+    content: 다음과 같은 형태로 키는 동일하지만 값은 다른 예시 10개를 생성하라. 다양한 형태로 변형해라  # 유저 프롬프트
+model: "llama-3.1-sonar-large-128k-online" # perplexity
+temperature: 0.8
+max_tokens: 2000
+top_p: 0.9
+frequency_penalty: 1.0
+presence_penalty: 0.0
+search_domain_filter: null
+return_images: False
+return_related_questions: False
+search_recency_filter: null
+top_k: 0
