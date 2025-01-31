@@ -19,15 +19,18 @@ class SearchPrompt:
             "Content-Type": "application/json"
         }
 
-    def preprocess_response(self, response:str) -> list:
-        # 정규식을 사용하여 문자열의 이스케이프된 문자를 처리
-        response = re.sub(r'``', '', response)  # 개행 문자 제거
-        response = re.sub(r'\\n', '', response)  # 개행 문자 제거
-        response = re.sub(r'\\\'', "'", response)  # 이스케이프된 작은따옴표 처리
-        response = re.sub(r'\\\"', '"', response)  # 이스케이프된 큰따옴표 처리
-        response = response.replace('\n', '')  # 모든 개행 문자 제거
+    def preprocess_response(self, response:str, type:str) -> list:
 
-        json_objects = re.findall(r'\{.*?\}', response)
+        if type != 'experience':
+            # 정규식을 사용하여 문자열의 이스케이프된 문자를 처리
+            response = re.sub(r'``', '', response)  # 개행 문자 제거
+            response = re.sub(r'\\n', '', response)  # 개행 문자 제거
+            response = re.sub(r'\\\'', "'", response)  # 이스케이프된 작은따옴표 처리
+            response = re.sub(r'\\\"', '"', response)  # 이스케이프된 큰따옴표 처리
+            response = response.replace('\n', '')  # 모든 개행 문자 제거
+            json_objects = re.findall(r'\{.*?\}', response, re.DOTALL)
+        else:
+            json_objects = re.findall(r'\{[^{}]*"experience_id":.*?"created_at":.*?\}', response, re.DOTALL)
 
         if json_objects:
             result_list = [json.loads(obj) for obj in json_objects]
@@ -36,7 +39,11 @@ class SearchPrompt:
         return result_list
 
     def get_type_json_file(self, type:str):
-        with open(f'{type}.json', 'r') as f:
+        if type[-5:] != '.json':
+            fname = f'{type}.json'
+        else:
+            fname = type
+        with open(fname, 'r') as f:
             type_json = json.load(f)
             type_str = json.dumps(type_json, ensure_ascii=False)
         return type_str
@@ -68,17 +75,30 @@ class SearchPrompt:
             log_file.write("\n\nError MSG:\n")
             log_file.write(str(e))
 
-    def generate_data(self, type_name:str) -> dict:
-        messages = [
-            {
-                "role": "system", 
-                "content": self.config['role']['system']['content']
-            },
-            {
-                "role": "user",
-                "content": self.config['role']['user']['content'] + self.get_type_json_file('prompt/'+type_name)
-            }
-        ]
+    def generate_data(self, type_name:str, trip_dir:str='') -> dict:
+
+        if type_name == 'experience':
+            messages = [
+                {
+                    "role": "system", 
+                    "content": self.config['role']['system']['content']
+                },
+                {
+                    "role": "user",
+                    "content": self.get_type_json_file(trip_dir) + self.config['role']['user']['content'] + self.get_type_json_file('prompt/'+type_name)
+                }
+            ]
+        else:
+            messages = [
+                {
+                    "role": "system", 
+                    "content": self.config['role']['system']['content']
+                },
+                {
+                    "role": "user",
+                    "content": self.config['role']['user']['content'] + self.get_type_json_file('prompt/'+type_name)
+                }
+            ]
         
         payload = {
             "model": self.config.get('model', 'llama-3.1-sonar-large-128k-online'),
@@ -99,7 +119,7 @@ class SearchPrompt:
         pre_result = response['choices'][0]['message']['content']
         
         try:
-            result_list = self.preprocess_response(pre_result)
+            result_list = self.preprocess_response(pre_result, type_name)
             # result_dict['prompt_ver'] = self.config.get('prompt_ver')
         except Exception as e:
             self.stack_logs(e, pre_result, type_name)

@@ -25,7 +25,7 @@ search_recency_filter:
 top_k: 
 ```
 3. __run__.py 파일 실행
-`python __run__.py prompt/*.yaml {join/trip/experience}`
+`python __run__.py prompt/*.yaml {join/trip/experience} {experience인 경우 관련된 trip yaml을 함께 첨부}`
 
 ## 데이터 변형을 위한 샘플 조정
 - prompt/join.json, prompt/trip.json, prompt/experience.json는 각각의 샘플 파일입니다.
