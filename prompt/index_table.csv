@@ -17,3 +17,5 @@ index,prompt_ver,model,summary,file_name
 ,v1,llama-3.1-sonar-large-128k-online,...,prompt/prompt_1.yaml
 ,v2,llama-3.1-sonar-large-128k-online,...,prompt/prompt_2.yaml
 ,v3,llama-3.1-sonar-large-128k-online,...,prompt/prompt_3.yaml
+,v1,llama-3.1-sonar-large-128k-online,...,prompt/prompt_1.yaml
+,v2,llama-3.1-sonar-large-128k-online,...,prompt/prompt_2.yaml
